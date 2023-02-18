@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { render } from 'react-dom';
-import { SUGGESTIONS } from './countries';
+import { SUGGESTIONS } from './suggestionsValues';
 import './style.css';
 import { Tag, WithContext as ReactTags } from 'react-tag-input';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -14,12 +14,18 @@ const getStorageItem = (storageItem: string) => {
   return storageValue ? JSON.parse(storageValue ?? '[]'): []
 }
 
-const suggestions = [...SUGGESTIONS.map(suggestion => {
-  return {
-    id: suggestion,
-    text: suggestion
-  };
-}), ...getStorageItem(STORAGE_HISTORY_TAGS)];
+const suggestions = ((): Tag[] => {
+  const result = new Set<string>();
+  [...SUGGESTIONS, ...((getStorageItem(STORAGE_HISTORY_TAGS) as Tag[]).map(value => value.text))].forEach(element => {
+    result.add(element)
+  })
+  return Array.from(result).map(suggestion => {
+    return {
+      id: suggestion,
+      text: suggestion
+    } as Tag;
+  })
+})()
 
 const KeyCodes = {
   comma: 188,
