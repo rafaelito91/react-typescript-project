@@ -1,3 +1,9 @@
+.copyButton {
+   margin-top: 20px;
+   width: 100px;
+   height: 40px;
+  }
+
 /* Example Styles for React Tags*/
 #app {
  padding: 40px;

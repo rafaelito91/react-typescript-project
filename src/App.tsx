@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { render } from 'react-dom';
 import { COUNTRIES } from './countries';
 import './style.css';
@@ -19,7 +19,7 @@ const KeyCodes = {
 const delimiters = [KeyCodes.comma, KeyCodes.enter];
 
 export const App = () => {
-  const [tags, setTags] = React.useState([
+  const [tags, setTags] = useState([
     { id: 'Thailand', text: 'Thailand' },
     { id: 'India', text: 'India' },
     { id: 'Vietnam', text: 'Vietnam' },
@@ -48,6 +48,13 @@ export const App = () => {
     console.log('The tag at index ' + index + ' was clicked');
   };
 
+  const copyToClipboard = () => {
+    const tagTexts = tags.map(tag => tag.text).join(', ');
+    navigator.clipboard.writeText(tagTexts);
+  };
+
+  const inputRef = useRef(null);
+
   return (
     <div className="app">
       <h1> React Tags Example </h1>
@@ -63,6 +70,7 @@ export const App = () => {
           inputFieldPosition="top"
           autocomplete
         />
+        <button className="copyButton" onClick={copyToClipboard}>Copy tags to clipboard</button>
       </div>
     </div>
   );
