@@ -3,6 +3,8 @@ import { render } from 'react-dom';
 import { SUGGESTIONS } from './countries';
 import './style.css';
 import { Tag, WithContext as ReactTags } from 'react-tag-input';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faEye } from '@fortawesome/free-solid-svg-icons';
 
 const STORAGE_HISTORY_TAGS = 'historyTags';
 const STORAGE_TAGS = 'tags';
@@ -218,7 +220,7 @@ export const App = () => {
           </div>
         </div>)
         }
-        <button className='buttonsToggle' onClick={() => {setShowButtons(!showButtons)}}>Show Buttons</button>
+        <button className='buttonsToggle' onClick={() => {setShowButtons(!showButtons)}}><FontAwesomeIcon icon={faEye} /></button>
       </div>
     </div>
   );
