@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { render } from 'react-dom';
-import { rearrangeTagListBasedOnMapping, SUGGESTIONS } from './suggestionsValues';
+import { findTagColor, rearrangeTagListBasedOnMapping, SUGGESTIONS } from './suggestionsValues';
 import './style.css';
 import { Tag, WithContext as ReactTags } from 'react-tag-input';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -188,13 +188,28 @@ export const App = () => {
     revertShowInput()
   }
 
+  const highlightItemsByType = () => {
+    const elements: HTMLSpanElement[] = Array.from(document.querySelectorAll('span[class*="tag-wrapper"'))
+    for (const element of elements) {
+      const elementText = element.innerText.substring(0,element.innerText.length-1);
+      const text = removeEmphasis(elementText)
+      const color = findTagColor({id: text, text: text} as Tag)
+      if (color !== undefined) {
+        element.style.color = color
+      } else {
+        element.style.color = 'black'
+      }
+    }
+  }
+
   const rearrangeItems = () => {
-    console.log(tags)
     const newTags = rearrangeTagListBasedOnMapping(tags)
-    console.log(newTags)
-    setTags([])
     setTags(newTags)
   }
+
+  useEffect(() => {
+    highlightItemsByType(); // This is be executed when the state changes
+  }, [tags]);
 
   return (
     <div className="app">
