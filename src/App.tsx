@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { render } from 'react-dom';
-import { SUGGESTIONS } from './suggestionsValues';
+import { rearrangeTagListBasedOnMapping, SUGGESTIONS } from './suggestionsValues';
 import './style.css';
 import { Tag, WithContext as ReactTags } from 'react-tag-input';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -66,7 +66,7 @@ const getEmphasisScore = (tag: Tag) => {
   return intensity
 }
 
-const removeEmphasis = (tagText: string) => {
+export const removeEmphasis = (tagText: string) => {
   let processed = tagText.replaceAll(/(\{|\}|\(|\)|\[|\])/g, '')
   const indexOfNumericEmphasis = processed.indexOf(':')
   if (indexOfNumericEmphasis !== -1) {
@@ -188,6 +188,14 @@ export const App = () => {
     revertShowInput()
   }
 
+  const rearrangeItems = () => {
+    console.log(tags)
+    const newTags = rearrangeTagListBasedOnMapping(tags)
+    console.log(newTags)
+    setTags([])
+    setTags(newTags)
+  }
+
   return (
     <div className="app">
       <h1> Prompt Tags Manager </h1>
@@ -220,6 +228,7 @@ export const App = () => {
             <button className="standardButton" onClick={setStableDiffusion}>Stable diffusion</button>
           </div>
           <div className="buttons-container">
+            <button className="standardButton" onClick={rearrangeItems}>Rearrange Items</button>
             <button className="standardButton" onClick={focusInput}>Focus input</button>
             <button className="clearButton" onClick={clearStorage}>Reset prompt</button>
             <button className="copyButton" onClick={copyToClipboard}>Copy prompt to clipboard</button>
