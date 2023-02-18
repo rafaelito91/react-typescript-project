@@ -1,9 +1,30 @@
 .copyButton {
-   margin-top: 20px;
-   width: 100px;
-   height: 40px;
-  }
+   margin-top: 10px;
+   width: 150px;
+   height: 60px;
+   color: green;
+}
 
+.clearButton {
+   margin-top: 10px;
+   width: 150px;
+   height: 60px;
+   color: red;
+}
+
+.focusButton {
+   margin-top: 10px;
+   width: 150px;
+   height: 60px;
+}
+
+.buttons-container {
+   position: fixed;
+   display: flex;
+   flex-direction: column;
+   bottom: 0;
+   right: 0;
+}
 /* Example Styles for React Tags*/
 #app {
  padding: 40px;

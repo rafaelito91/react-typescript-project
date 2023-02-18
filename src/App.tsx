@@ -1,15 +1,23 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import { render } from 'react-dom';
-import { COUNTRIES } from './countries';
+import { SUGGESTIONS } from './countries';
 import './style.css';
 import { Tag, WithContext as ReactTags } from 'react-tag-input';
 
-const suggestions = COUNTRIES.map(country => {
+const STORAGE_HISTORY_TAGS = 'historyTags';
+const STORAGE_TAGS = 'tags';
+
+const getStorageItem = (storageItem: string) => {
+  const storageValue = localStorage.getItem(storageItem)
+  return storageValue ? JSON.parse(storageValue ?? '[]'): []
+}
+
+const suggestions = [...SUGGESTIONS.map(suggestion => {
   return {
-    id: country,
-    text: country
+    id: suggestion,
+    text: suggestion
   };
-});
+}), ...getStorageItem(STORAGE_HISTORY_TAGS)];
 
 const KeyCodes = {
   comma: 188,
@@ -19,12 +27,9 @@ const KeyCodes = {
 const delimiters = [KeyCodes.comma, KeyCodes.enter];
 
 export const App = () => {
-  const [tags, setTags] = useState([
-    { id: 'Thailand', text: 'Thailand' },
-    { id: 'India', text: 'India' },
-    { id: 'Vietnam', text: 'Vietnam' },
-    { id: 'Turkey', text: 'Turkey' }
-  ]);
+  const [tags, setTags] = useState<Tag[]>(
+    getStorageItem(STORAGE_TAGS)
+  );
 
   const handleDelete = (i: number) => {
     setTags(tags.filter((tag, index) => index !== i));
@@ -49,11 +54,20 @@ export const App = () => {
   };
 
   const copyToClipboard = () => {
-    const tagTexts = tags.map(tag => tag.text).join(', ');
-    navigator.clipboard.writeText(tagTexts);
+    const tagsText = tags.map(tag => tag.text).join(', ');
+    localStorage.setItem(STORAGE_TAGS, JSON.stringify(tags));
+    localStorage.setItem(STORAGE_HISTORY_TAGS, JSON.stringify([...getStorageItem(STORAGE_HISTORY_TAGS), ...tags]))
+    navigator.clipboard.writeText(tagsText);
   };
 
-  const inputRef = useRef(null);
+  const clearStorage = () => {
+    localStorage.setItem(STORAGE_TAGS, JSON.stringify([]));
+    setTags([])
+  };
+
+  const focusInput = () => {
+    document.querySelector('input')?.focus()
+  };
 
   return (
     <div className="app">
@@ -68,9 +82,14 @@ export const App = () => {
           handleDrag={handleDrag}
           handleTagClick={handleTagClick}
           inputFieldPosition="top"
+          autofocus={true}
           autocomplete
         />
-        <button className="copyButton" onClick={copyToClipboard}>Copy tags to clipboard</button>
+        <div className="buttons-container">
+        <button className="focusButton" onClick={focusInput}>Focus input</button>
+          <button className="clearButton" onClick={clearStorage}>Reset clipboard</button>
+          <button className="copyButton" onClick={copyToClipboard}>Copy tags to clipboard</button>
+        </div>
       </div>
     </div>
   );
