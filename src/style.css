@@ -12,10 +12,18 @@
    color: red;
 }
 
-.focusButton {
+.standardButton {
    margin-top: 10px;
    width: 150px;
    height: 60px;
+}
+
+.system-buttons-container {
+   position: fixed;
+   display: flex;
+   flex-direction: column;
+   bottom: 0;
+   left: 0;
 }
 
 .buttons-container {
@@ -42,22 +50,25 @@ div.ReactTags__tagInput {
 }
 div.ReactTags__tagInput input.ReactTags__tagInputField,
 div.ReactTags__tagInput input.ReactTags__tagInputField:focus {
-   height: 31px;
+   height: 50px;
    margin: 0;
-   font-size: 12px;
+   font-size: 16px;
    width: 100%;
    border: 1px solid #eee;
    padding: 0 4px;
 }
 
+span.tag-wrapper {
+   margin-left: 5px;
+   margin-top: 5px;
+}
 /* Styles for selected tags */
 div.ReactTags__selected span.ReactTags__tag {
    border: 1px solid #ddd;
    background: #eee;
-   font-size: 12px;
+   font-size: 16px;
    display: inline-block;
-   padding: 5px;
-   margin: 0 5px;
+   padding: 10px;
    cursor: move;
    border-radius: 2px;
 }

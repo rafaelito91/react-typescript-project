@@ -1,4 +1,8 @@
-# Getting Started with Create React App
+# TODO
+
+- Add radio button for stable diffusion/novelai/midjourney for the emphasis feature
+
+# React default docs
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 

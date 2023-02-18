@@ -24,9 +24,55 @@ const KeyCodes = {
   enter: 13
 };
 
+type System = 'novelai' | 'stable-diffusion'
+
+type EmphasisCharacter = '{' | '}' | '(' | ')'
+type EmphasisDelimiter = {
+  opener: EmphasisCharacter,
+  closer: EmphasisCharacter
+}
+
+const emphasisMap: Record<System, EmphasisDelimiter> = {
+  novelai: {
+    opener: '{',
+    closer: '}'
+  },
+  "stable-diffusion": {
+    opener: '(',
+    closer: ')'
+  }
+}
+
 const delimiters = [KeyCodes.comma, KeyCodes.enter];
 
+const getEmphasisScore = (tag: Tag) => {
+  const tagText = tag.text
+  let intensity = 0
+  for (const char of tagText) {
+    if (['{', '('].includes(char)) {
+      intensity++
+    } else {
+      break
+    }
+  }
+  return intensity
+}
+
+const removeEmphasis = (tagText: string) => {
+  return tagText.replaceAll(/(\{|\}|\(|\))/g, '')
+}
+
+const removeEmphasisFromTag = (tag: Tag) => {
+  const newTag = {
+    id: removeEmphasis(tag.id),
+    text: removeEmphasis(tag.text)
+  }
+  return newTag
+}
+
 export const App = () => {
+  const [system, setSystem] = useState<System>('stable-diffusion')
+
   const [tags, setTags] = useState<Tag[]>(
     getStorageItem(STORAGE_TAGS)
   );
@@ -49,8 +95,25 @@ export const App = () => {
     setTags(newTags);
   };
 
+  const addEmphasis = (tag: Tag): Tag => {
+    const {opener, closer} = emphasisMap[system]
+    if (getEmphasisScore(tag) >= 6) {
+      return removeEmphasisFromTag(tag)
+    }  else {
+      return {
+        id: `${opener}${tag.id}${closer}`,
+        text: `${opener}${tag.text}${closer}`,
+      }
+    }
+  }
+
   const handleTagClick = (index: number) => {
-    console.log('The tag at index ' + index + ' was clicked');
+    // TODO: Improvament - Understand why it's counting for 2 clicks
+    console.log('Click event!')
+    const tag = { ...tags[index] }
+    const newTags = [...tags]
+    newTags[index] = addEmphasis(tag) 
+    setTags(newTags)
   };
 
   const copyToClipboard = () => {
@@ -69,9 +132,25 @@ export const App = () => {
     document.querySelector('input')?.focus()
   };
 
+  const resetTagsEmphasis = () => {
+    const newTags = tags.map(tag => removeEmphasisFromTag(tag))
+    setTags(newTags)
+  }
+
+  const setNovelAi = () => {
+    resetTagsEmphasis()
+    setSystem('novelai')
+  }
+
+  const setStableDiffusion = () => {
+    resetTagsEmphasis()
+    setSystem('stable-diffusion')
+  }
+
   return (
     <div className="app">
       <h1> React Tags Example </h1>
+      
       <div>
         <ReactTags
           tags={tags}
@@ -85,10 +164,14 @@ export const App = () => {
           autofocus={true}
           autocomplete
         />
+        <div className="system-buttons-container">
+          <button className="standardButton" onClick={setNovelAi}>Novel Ai</button>
+          <button className="standardButton" onClick={setStableDiffusion}>Stable diffusion</button>
+        </div>
         <div className="buttons-container">
-        <button className="focusButton" onClick={focusInput}>Focus input</button>
-          <button className="clearButton" onClick={clearStorage}>Reset clipboard</button>
-          <button className="copyButton" onClick={copyToClipboard}>Copy tags to clipboard</button>
+          <button className="standardButton" onClick={focusInput}>Focus input</button>
+          <button className="clearButton" onClick={clearStorage}>Reset prompt</button>
+          <button className="copyButton" onClick={copyToClipboard}>Copy prompt to clipboard</button>
         </div>
       </div>
     </div>
