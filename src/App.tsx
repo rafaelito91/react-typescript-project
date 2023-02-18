@@ -59,7 +59,12 @@ const getEmphasisScore = (tag: Tag) => {
 }
 
 const removeEmphasis = (tagText: string) => {
-  return tagText.replaceAll(/(\{|\}|\(|\))/g, '')
+  let processed = tagText.replaceAll(/(\{|\}|\(|\)|\[|\])/g, '')
+  const indexOfNumericEmphasis = processed.indexOf(':')
+  if (indexOfNumericEmphasis !== -1) {
+    processed = processed.slice(0, indexOfNumericEmphasis)
+  }
+  return processed
 }
 
 const removeEmphasisFromTag = (tag: Tag) => {
@@ -150,6 +155,10 @@ export const App = () => {
     setSystem('stable-diffusion')
   }
 
+  const revertShowInput = () => {
+    setShowInput(!showInput)
+  }
+
   const importTags = () => {
     const inputElement: HTMLInputElement | undefined = document.querySelector('.hiddenInput') as HTMLInputElement
     if (inputElement !== undefined) {
@@ -165,7 +174,8 @@ export const App = () => {
         })
         setTags(newTags)
       }
-    } 
+    }
+    revertShowInput()
   }
 
   return (
@@ -191,7 +201,7 @@ export const App = () => {
           autocomplete
         />
         <div className="system-buttons-container">
-        <button className="standardButton" onClick={() => setShowInput(!showInput)}>
+        <button className="standardButton" onClick={revertShowInput}>
           {showInput ? 'Hide Input' : 'Show Input'}
         </button>
           <button className="standardButton" onClick={setNovelAi}>Novel Ai</button>
