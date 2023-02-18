@@ -27,7 +27,7 @@
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
-  "homepage": "http://rafaelito91.github.io/react-typescript-project",
+  "homepage": "https://rafaelito91.github.io/react-typescript-project",
   "eslintConfig": {
     "extends": [
       "react-app",
