@@ -84,6 +84,8 @@ export const App = () => {
 
   const [showInput, setShowInput] = useState<boolean>(false);
 
+  const [showButtons, setShowButtons] = useState<boolean>(true);
+
   const handleDelete = (i: number) => {
     setTags(tags.filter((tag, index) => index !== i));
   };
@@ -164,7 +166,7 @@ export const App = () => {
     if (inputElement !== undefined) {
       const value = inputElement.value
       if (value.length > 0) {
-        const newTags = value.split(',').map(tag => {
+        const newTags = value.split(',').filter(tagText => tagText && tagText.length > 0).map(tag => {
           const rawValue = removeEmphasis(tag.trim())
           const newTag = {
             id: rawValue,
@@ -180,7 +182,7 @@ export const App = () => {
 
   return (
     <div className="app">
-      <h1> React Tags Example </h1>
+      <h1> Prompt Tags Manager </h1>
       {showInput && (
       <div className='hiddenDiv'>
         <input className='hiddenInput'></input>
@@ -200,18 +202,23 @@ export const App = () => {
           autofocus={true}
           autocomplete
         />
-        <div className="system-buttons-container">
-        <button className="standardButton" onClick={revertShowInput}>
-          {showInput ? 'Hide Input' : 'Show Input'}
-        </button>
-          <button className="standardButton" onClick={setNovelAi}>Novel Ai</button>
-          <button className="standardButton" onClick={setStableDiffusion}>Stable diffusion</button>
-        </div>
-        <div className="buttons-container">
-          <button className="standardButton" onClick={focusInput}>Focus input</button>
-          <button className="clearButton" onClick={clearStorage}>Reset prompt</button>
-          <button className="copyButton" onClick={copyToClipboard}>Copy prompt to clipboard</button>
-        </div>
+        {showButtons && (
+        <div>
+          <div className="system-buttons-container">
+            <button className="standardButton" onClick={revertShowInput}>
+              {showInput ? 'Hide Import' : 'Show Import'}
+            </button>
+            <button className="standardButton" onClick={setNovelAi}>Novel Ai</button>
+            <button className="standardButton" onClick={setStableDiffusion}>Stable diffusion</button>
+          </div>
+          <div className="buttons-container">
+            <button className="standardButton" onClick={focusInput}>Focus input</button>
+            <button className="clearButton" onClick={clearStorage}>Reset prompt</button>
+            <button className="copyButton" onClick={copyToClipboard}>Copy prompt to clipboard</button>
+          </div>
+        </div>)
+        }
+        <button className='buttonsToggle' onClick={() => {setShowButtons(!showButtons)}}>Show Buttons</button>
       </div>
     </div>
   );
