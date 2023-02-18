@@ -77,6 +77,8 @@ export const App = () => {
     getStorageItem(STORAGE_TAGS)
   );
 
+  const [showInput, setShowInput] = useState<boolean>(false);
+
   const handleDelete = (i: number) => {
     setTags(tags.filter((tag, index) => index !== i));
   };
@@ -147,10 +149,33 @@ export const App = () => {
     setSystem('stable-diffusion')
   }
 
+  const importTags = () => {
+    const inputElement: HTMLInputElement | undefined = document.querySelector('.hiddenInput') as HTMLInputElement
+    if (inputElement !== undefined) {
+      const value = inputElement.value
+      if (value.length > 0) {
+        const newTags = value.split(',').map(tag => {
+          const rawValue = removeEmphasis(tag.trim())
+          const newTag = {
+            id: rawValue,
+            text:rawValue
+          }
+          return newTag
+        })
+        setTags(newTags)
+      }
+    } 
+  }
+
   return (
     <div className="app">
       <h1> React Tags Example </h1>
-      
+      {showInput && (
+      <div className='hiddenDiv'>
+        <input className='hiddenInput'></input>
+        <button className='standardButton' onClick={importTags}>Import</button>
+      </div>
+      )}
       <div>
         <ReactTags
           tags={tags}
@@ -165,6 +190,9 @@ export const App = () => {
           autocomplete
         />
         <div className="system-buttons-container">
+        <button className="standardButton" onClick={() => setShowInput(!showInput)}>
+          {showInput ? 'Hide Input' : 'Show Input'}
+        </button>
           <button className="standardButton" onClick={setNovelAi}>Novel Ai</button>
           <button className="standardButton" onClick={setStableDiffusion}>Stable diffusion</button>
         </div>
