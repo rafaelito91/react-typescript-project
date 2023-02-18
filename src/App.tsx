@@ -120,8 +120,9 @@ export const App = () => {
 
   const copyToClipboard = () => {
     const tagsText = tags.map(tag => tag.text).join(', ');
-    localStorage.setItem(STORAGE_TAGS, JSON.stringify(tags));
-    localStorage.setItem(STORAGE_HISTORY_TAGS, JSON.stringify([...getStorageItem(STORAGE_HISTORY_TAGS), ...tags]))
+    const cleanTags = tags.map(tag => removeEmphasisFromTag(tag))
+    localStorage.setItem(STORAGE_TAGS, JSON.stringify(cleanTags));
+    localStorage.setItem(STORAGE_HISTORY_TAGS, JSON.stringify([...getStorageItem(STORAGE_HISTORY_TAGS), ...cleanTags]))
     navigator.clipboard.writeText(tagsText);
   };
 
